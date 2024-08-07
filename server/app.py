@@ -1,12 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
-from config import ApplicationConfig
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jti, get_jwt
 from datetime import datetime, timezone
 import base64, json
 from crypto import cryptApp
-from models import db, User
+from config import ApplicationConfig
+from models import db, User, RecordSubjectToRegistry, Subject, UserQlDt
+from seed.monHoc.seed import Seed
+from helper.major import majors
+from helper import majorHelper
+from services.access_qldt import AccessQLDT
+
 
 app = Flask(__name__)
 
@@ -109,7 +114,54 @@ def logout():
     
     return jsonify({"msg": "Logout failed"}), 400
 
+@app.route('/api/v1/majors', methods=['POST'])
+def get_majors():
+    return jsonify({"msg": majors}), 200
+
+@app.route('/api/v1/subjects', methods=['POST'])
+def show_subjects():
+    major = request.get_json().get('major')
+    subjects = Subject.query.filter_by(major_id=majorHelper.getId(major))
+    res = [subject.to_dict() for subject in subjects]
+    return jsonify({"msg": res}), 200
+
+'''
+    SERVICES QlDT
+'''
+
+@app.route('/api/v1/login_qldt', methods=['POST'])
+@jwt_required()
+def login_qldt():
+    data = request.get_json()
+    msv = data.get('msv')
+    password = data.get('password')
+    new_user = AccessQLDT(username=msv, password=password)
+    response = new_user.login()
+    if response.get('code') == '200':
+        try:
+            current_user = get_jwt_identity().get('username')
+            user_qldt = UserQlDt.query.filter_by(username=current_user).first()
+            if user_qldt:
+                user_qldt.msv = msv
+                user_qldt.password = password
+            else:
+                new_user_qldt = UserQlDt(
+                    username=current_user,  
+                    msv = msv,
+                    password=password
+                )
+                db.session.add(new_user_qldt)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({'message': 'your qldt and account is unique'}), 201
+        
+    return jsonify(response), 200
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        seeding = Seed(db, Subject)
+        seeding.run()
+        
     app.run(debug=True)

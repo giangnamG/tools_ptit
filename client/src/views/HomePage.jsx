@@ -1,9 +1,9 @@
-/* eslint-disable default-case */
-import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 import SideBarComponent from '../components/SideBarComponent';
+import SideBarTopComponent from '../components/SideBarTopComponent';
 import MainLayoutComponent from '../components/MainLayoutComponent';
+import config from '../config';
 
 export default function HomePage() {
 
@@ -13,7 +13,16 @@ export default function HomePage() {
                 <SideBarComponent />
             </Col>
             <Col xs={12} sm={12} md={9} lg={10} xl={10} className="content p-4">
-                <MainLayoutComponent />
+                <Row>
+                    <Col >
+                        <SideBarTopComponent />
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: config.app.styles.heightNavbar - 15 }}>
+                    <Col>
+                        <MainLayoutComponent />
+                    </Col>
+                </Row>
             </Col>
         </Row>
     )

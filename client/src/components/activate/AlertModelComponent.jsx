@@ -1,7 +1,7 @@
 import { Button, Modal, Alert } from 'react-bootstrap';
 
 const styles = {
-    marginRight: 100
+    marginRight: 100,
 }
 export default function AlertModelComponent({ showAlert, handleCloseShowAlert, messageAlert }) {
     return <>
@@ -9,8 +9,8 @@ export default function AlertModelComponent({ showAlert, handleCloseShowAlert, m
             onHide={handleCloseShowAlert}
             keyboard={false}
             style={styles}>
-            <Alert show={showAlert} style={{ marginBottom: '0px', }} variant="white">
-                <Alert.Heading>{messageAlert}</Alert.Heading>
+            <Alert show={showAlert} style={{ marginBottom: '0px', backgroundColor: 'black' }} variant="white">
+                <Alert.Heading className='blink'>{messageAlert}</Alert.Heading>
                 <hr />
                 <div className="d-flex justify-content-end">
                     <Button onClick={handleCloseShowAlert} variant="outline-success">

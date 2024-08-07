@@ -2,7 +2,13 @@ const config = {
     'app': {
         'baseUrl': 'http://localhost:3000',
         'styles': {
-            'backgroundColor': '#FFF5EE',
+            'sideBarColor': '#343a40',
+            'backgroundColor': '#282c34',
+            'titleColor': '#DA70D6',
+            'heightNavbar': 45,
+            'widthSidebar': 250,
+            'fontLink': '#adb5bd',
+
         },
         'iconSvg': {
             'logoHomePage': <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">

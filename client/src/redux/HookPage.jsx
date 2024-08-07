@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 export const HookPage = createSlice({
     name: 'hook',
     initialState: {
-        value: null,
+        hookName: 'default',
+        props: {}
     },
     reducers: {
         setHook: (state, action) => {
-            state.value = action.payload
+            state.hookName = action.payload.hookName
+            state.props = action.payload.props
         },
     },
 })
